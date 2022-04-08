@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+    frontend-nginx:
+        build:
+            context: docker/frontend/nginx
+            dockerfile: development/Dockerfile
+        ports:
+            - "8080:80"
+        volumes:
+            - ./frontend:/app
+
+    backend-nginx:
+        build:
+            context: docker/backend/nginx
+            dockerfile: development/Dockerfile
+        ports:
+            - "8081:80"
+        volumes:
+            - ./backend:/app
+        depends_on:
+            -   backend-php-fpm
+
+    backend-php-fpm:
+        build:
+            context: docker/backend/php-fpm
+            dockerfile: development/Dockerfile
+        env_file:
+            - ./config/backend-php/.env.dev
+        volumes:
+            - ./backend:/app
+
+    backend-php-cli:
+        build:
+            context: docker/backend/php-cli
+            dockerfile: development/Dockerfile
+        env_file:
+            - ./config/backend-php/.env.dev
+        volumes:
+            - ./backend:/app
+
+networks:
+    default:
+        name: db_network
