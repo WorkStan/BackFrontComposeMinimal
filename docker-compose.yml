@@ -7,6 +7,13 @@ services:
         ports:
             - "8080:80"
         volumes:
+            - ./frontend/build:/app/public
+
+    frontend-nodejs:
+        build:
+            context: docker/frontend/nodejs
+            dockerfile: development/Dockerfile
+        volumes:
             - ./frontend:/app
 
     backend-nginx:
